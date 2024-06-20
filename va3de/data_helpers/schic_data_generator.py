@@ -65,7 +65,7 @@ class DataGenerator(Sequence):
         self.max_read_depth = self.reference['depth'].max()
         self.batch_size = batch_size  # size of each batch during training
         # list of all cell file names
-        self.cell_list = list(self.reference.index)
+        self.cell_list = sorted(list(self.reference.index))
         self.n_cells = len(self.reference)  # total cells to train on
         if class_names is None:
             # list of cluster names

@@ -10,7 +10,7 @@ import numpy as np
 import tensorflow_probability as tfp
 from tqdm import tqdm
 from tensorflow_probability import distributions as tfd
-from wandb.keras import WandbCallback
+from wandb.integration.keras import WandbCallback
 
 
 
@@ -164,6 +164,16 @@ def train_va3de(features, dataset, experiment, run_i, args, preprocessing=None, 
             #         joblib.dump(dataset.sparse_matrices, f)  # and save the sparse matrix dict for use later
             # except MemoryError:
             #     print('Not enough memory to save')
+            if preprocessing is not None:
+                if 'idf' in preprocessing:
+                    from sklearn.preprocessing import normalize
+                    x_flat = x_train.reshape(x_train.shape[0], -1)
+                    idf = np.log(x_flat.shape[0] / (np.sum(x_flat > 0, axis=0) + 1))
+                    x_flat = x_flat * idf
+                    x_flat = np.nan_to_num(x_flat)
+                    x_flat = normalize(x_flat, norm="l2")
+                    x_train = x_flat.reshape(x_train.shape)
+                    args.gaussian_output = True  # model normalized idf weights using gaussian
 
         y = np.array(y)
         depths = np.array(depths)
