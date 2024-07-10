@@ -307,7 +307,7 @@ def train_va3de(features, dataset, experiment, run_i, args, preprocessing=None, 
                         verbose=2)
 
         component_dist = None
-        for dist in gm_layer:
+        for dist in gm_layer.submodules:
             if isinstance(dist, tfp.distributions.Categorical) and dist.parameters['name'] == 'prior_categorical':
                 logits = dist.parameters['logits']
                 p_c = logits - tf.reduce_logsumexp(logits, axis=0, keepdims=True)
