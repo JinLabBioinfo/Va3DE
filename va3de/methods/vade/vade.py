@@ -306,5 +306,17 @@ def train_va3de(features, dataset, experiment, run_i, args, preprocessing=None, 
                         batch_size=batch_size,
                         verbose=2)
 
+        component_dist = None
+        for dist in gm_layer:
+            if isinstance(dist, tfp.distributions.Categorical) and dist.parameters['name'] == 'prior_categorical':
+                logits = dist.parameters['logits']
+                p_c = logits - tf.reduce_logsumexp(logits, axis=0, keepdims=True)
+                print('p_c', p_c)
+            elif isinstance(dist, tfp.distributions.MultivariateNormalDiag) and 'name' in dist.parameters:
+                if dist.parameters['name'] == 'prior':
+                    component_dist = dist
+        experiment.p_c = p_c
+        experiment.component_dist = component_dist
+
     
     experiment.run(load=load_results, outer_iter=run_i, start_time=start_time, log_wandb=args.wandb, wandb_config=wandb_config)
