@@ -76,7 +76,7 @@ def make_mixture_prior(latent_size, mixture_components, distribution='normal'):
 def train_va3de(features, dataset, experiment, run_i, args, preprocessing=None, load_results=False, wandb_config=None, save_memory=True):
     from va3de.methods.vade.sc_vade_callback import VisualizeCallback
     start_time = time.time()
-    if args.wandb:
+    if args.vade_wandb:
         wandb.login(key='')
     plt.style.use('default')
 
@@ -279,7 +279,7 @@ def train_va3de(features, dataset, experiment, run_i, args, preprocessing=None, 
 
         viz_callback = VisualizeCallback(x_train, y, encoder, decoder, vae, gm_layer, dataset, n_clusters,
                                         n_cell_types, features, n_epochs, batch_size,
-                                        ll_norm = np.prod(input_shape), log_wandb=args.wandb,
+                                        ll_norm = np.prod(input_shape), log_wandb=args.vade_wandb,
                                         save_interval=100, update_interval=100,
                                         save_memory=save_memory, preprocessing=preprocessing,
                                         save_dir='va3de/%s/%d/' % (dataset.dataset_name, run_i),
@@ -288,7 +288,7 @@ def train_va3de(features, dataset, experiment, run_i, args, preprocessing=None, 
         logdir = 'logs/%s' % dataset.dataset_name
         os.makedirs(logdir, exist_ok=True)
 
-        if args.wandb:
+        if args.vade_wandb:
             wandb_callback = WandbCallback(log_gradients=False)
         else:
             wandb_callback = None
@@ -319,4 +319,4 @@ def train_va3de(features, dataset, experiment, run_i, args, preprocessing=None, 
         experiment.component_dist = component_dist
 
     
-    experiment.run(load=load_results, outer_iter=run_i, start_time=start_time, log_wandb=args.wandb, wandb_config=wandb_config)
+    experiment.run(load=load_results, outer_iter=run_i, start_time=start_time, log_wandb=args.vade_wandb, wandb_config=wandb_config)
