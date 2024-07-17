@@ -319,4 +319,4 @@ def train_va3de(features, dataset, experiment, run_i, args, preprocessing=None, 
         experiment.component_dist = component_dist
 
     
-    experiment.run(load=load_results, outer_iter=run_i, start_time=start_time, log_wandb=args.vade_wandb, wandb_config=wandb_config)
+    experiment.run(load=load_results, outer_iter=run_i, start_time=start_time, log_wandb=args.wandb, wandb_config=wandb_config)
